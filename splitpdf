@@ -55,7 +55,8 @@ for((i=$firstpage;i<=lastpage;i=i+1)); do
     gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER \
        -dFirstPage=$i \
        -dLastPage=$i \
-       -sOutputFile="${basename}_p$(padnum $i $lastpage).pdf" &> /dev/null
+       -sOutputFile="${basename}_p$(padnum $i $lastpage).pdf" \
+       "$infile" &> /dev/null
     if [[ $? -ne 0 ]] ; then
         echo "Error extracting page $i"
     fi
