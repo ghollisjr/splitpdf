@@ -1,0 +1,53 @@
+#!/bin/bash
+# This script splits a PDF file into its constituent pages, one file
+# per page.
+
+# Returns number of pages in a PDF file
+function numpages {
+    filename="$1"
+    gs -q -dNODISPLAY -c "($filename) (r) file runpdfbegin pdfpagecount = quit"
+}
+
+# Formats output of calc command
+
+function ncalc {
+    calc $@ | sed -e 's/^\t~*//'
+}
+
+# Returns the number of digits in an integer
+function ndigits {
+    num="$1"
+    ncalc "floor(log($num))+1"
+}
+
+# Pads number according to the number of 0's needed.
+function padnum {
+    n=$1
+    maxn=$2
+    ndigits=$(ndigits $n)
+    maxndigits=$(ndigits $maxn)
+    for((i=1;i<=(maxndigits-ndigits);i=i+1)); do
+        printf 0
+    done
+    echo $n
+}
+
+if [[ $# -ne 1 || "$@" == "-h" || "$@" == "--help" ]] ; then
+    echo "Usage: splitpdf <infile.pdf>."
+    echo ""
+    echo "Splits original file into single page files named"
+    echo "as <infile_p#.pdf> where # is the page number."
+    exit 1
+fi
+
+infile="$1"
+firstpage=1
+lastpage=$(numpages $1)
+basename=$(basename "$infile" .pdf)
+
+for((i=$firstpage;i<=lastpage;i=i+1)); do
+    gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER \
+       -dFirstPage=$i \
+       -dLastPage=$i \
+       -sOutputFile="${basename}_p$(padnum $i $lastpage).pdf"
+done
