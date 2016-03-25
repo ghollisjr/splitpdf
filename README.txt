@@ -4,3 +4,5 @@ splitpdf besides bash are
 
 * gs
 * calc
+
+splitpdf is in the public domain, use it for whatever.
