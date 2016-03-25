@@ -41,13 +41,25 @@ if [[ $# -ne 1 || "$@" == "-h" || "$@" == "--help" ]] ; then
 fi
 
 infile="$1"
+if [[ ! -f "$infile" ]] ; then
+    echo "Error: file $infile does not exist"
+    exit 1
+fi
+
 firstpage=1
 lastpage=$(numpages $1)
 basename=$(basename "$infile" .pdf)
 
 for((i=$firstpage;i<=lastpage;i=i+1)); do
+    printf "Extracting Page $i"'\r';
     gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER \
        -dFirstPage=$i \
        -dLastPage=$i \
-       -sOutputFile="${basename}_p$(padnum $i $lastpage).pdf"
+       -sOutputFile="${basename}_p$(padnum $i $lastpage).pdf" &> /dev/null
+    if [[ $? -ne 0 ]] ; then
+        echo "Error extracting page $i"
+    fi
 done
+# Clear line command
+printf '\033[K'
+echo "done"
