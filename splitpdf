@@ -8,16 +8,10 @@ function numpages {
     gs -q -dNODISPLAY -c "($filename) (r) file runpdfbegin pdfpagecount = quit"
 }
 
-# Formats output of calc command
-
-function ncalc {
-    calc $@ | sed -e 's/^\t~*//'
-}
-
 # Returns the number of digits in an integer
 function ndigits {
     num="$1"
-    ncalc "floor(log($num))+1"
+    echo "$num" | awk '{print(int(log($0)/log(10))+1);}'
 }
 
 # Pads number according to the number of 0's needed.

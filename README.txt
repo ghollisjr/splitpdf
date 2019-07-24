@@ -3,6 +3,6 @@ file into its pages, one file per page.  The programs needed to use
 splitpdf besides bash are
 
 * gs
-* calc
+* awk
 
 splitpdf is in the public domain, use it for whatever.
