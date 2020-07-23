@@ -5,7 +5,7 @@
 # Returns number of pages in a PDF file
 function numpages {
     filename="$1"
-    gs -q -dNODISPLAY -c "($filename) (r) file runpdfbegin pdfpagecount = quit"
+    gs -q -dNOSAFER -dNODISPLAY -c "($filename) (r) file runpdfbegin pdfpagecount = quit"
 }
 
 # Returns the number of digits in an integer
